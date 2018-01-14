@@ -16,5 +16,17 @@
   "bugs": {
     "url": "https://github.com/gavin103/course_charts/issues"
   },
-  "homepage": "https://github.com/gavin103/course_charts#readme"
+  "homepage": "https://github.com/gavin103/course_charts#readme",
+  "dependencies": {
+    "co": "^4.6.0",
+    "koa": "^2.4.1",
+    "koa-simple-router": "^0.2.0",
+    "koa-static": "^4.0.2",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-register": "^6.26.0"
+  }
 }
