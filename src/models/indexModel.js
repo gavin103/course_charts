@@ -5,12 +5,11 @@ class indexModel{
     };
     getList(){
         const option = {
-            uri: 'http://localhost/newslist.php',
+            uri: 'http://localhost/getcourses.php',
             method: 'GET'
         };
         return new Promise((resolve,reject)=>{
             rpA(option).then(res=>{
-                console.log(res);
                 resolve(res);
             })
         })

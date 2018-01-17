@@ -7,7 +7,8 @@ gulp.task('default',['news'],()=>{
 gulp.task('news',()=>
     gulp.src(['src/**/*.js','!src/public/*/*.js'])
         .pipe(babel({
-            presets: ['env','stage-0']
+            presets: ['env','stage-0'],
+            plugins: ["transform-runtime", "babel-plugin-transform-regenerator"]
         }))
         .pipe(gulp.dest('build'))
 )
