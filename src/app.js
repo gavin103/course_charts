@@ -195,24 +195,19 @@ const urlList = [
 
 const crawlData = {
 
-    'init': function(){
-        urlList.forEach(item => {
-            this.start(item);
-        })
-    },
-    'start': async function(item){
+    'start': async function (item) {
         let onLineStuTmp = await this.spider(item.url, 0);
         let onLineStu = null;
-        onLineStuTmp.split(' ').forEach((item)=>{
-            if(item.includes('人')){
+        onLineStuTmp.split(' ').forEach((item) => {
+            if (item.includes('人')) {
                 onLineStu = item;
             }
         });
 
         let totalStuTmp = await this.spider(item.url, 1);
         let totalStu = null;
-        totalStuTmp.split(' ').forEach((item)=>{
-            if(item.includes('人')){
+        totalStuTmp.split(' ').forEach((item) => {
+            if (item.includes('人')) {
                 totalStu = item;
             }
         });
@@ -225,11 +220,16 @@ const crawlData = {
             createDate,
             courseCode: item.courseCode
         };
+        //用递归调用，在任一属性为空的时候再次抓取数据，直到全部非空，返回对象
+        if (obj.onLineStu && obj.totalStu && obj.createDate && obj.courseCode) {
+            return obj;
+        } else {
+            arguments.callee();
+        }
 
-        return obj;
     },
 
-    'spider': function(uri, n){
+    'spider': function (uri, n) {
         let options = {
             uri,
             transform: function (body) {
@@ -247,32 +247,84 @@ const crawlData = {
         })
     },
 };
+const rangeData = {
+    'cloneList': function (urlList) {
+        let newUrlList = [...urlList];
+        newUrlList.forEach((item, index) => {
+            item.data = [];
+            newUrlList[index] = {...item};
+        });
+        return newUrlList;
+    },
 
-function rangeList(urlList,dataList) {
-    let newUrlList = [...urlList];
-    for(let item in newUrlList){
-        if(!item.url || !item.courseCode){ continue };
-        item.data = [];
-        dataList.forEach(it =>{
-            if(it.courseCode){
-                it.courseCode == item.courseCode? item.data.push(it):null
-            }
-        })
-        item.data.sort((a,b)=>{
-            return Date.parse(a.createDate) - Date.parse(b.createDate)
-        })
+    'rangeList': function (urlList, dataList) {
+        let newUrlList = this.cloneList(urlList);
+        for (let item of newUrlList) {
+            dataList.forEach(it => {
+                if (+it.courseCode == +item.courseCode) {
+                    item.data.push(it)
+                }
+            });
+            item.data = item.data.sort((a, b) => {
+                return Date.parse(a.createDate) - Date.parse(b.createDate)
+            })
+        }
+        return newUrlList
+    }
+};
+
+
+function crawTimer() {
+    //初始化list
+    const listData = {
+        list: [],
+        date: (new Date).toLocaleString().split(' ')[0]
     };
-    return newUrlList;
+    //设置定时器，每30秒执行一次
+    let timer = setInterval(() => {
+        //获取当前时间
+        let t = (new Date).toLocaleString().split(' ')[1];
+        console.log(t);
+        let h = t.split(':')[0];
+        let m = t.split(':')[1];
+
+        if (parseInt(m) % 5 == 0) { //判断时间是否为5/0,todo换0:00
+            if (listData.date && listData.date == (new Date).toLocaleString().split(' ')[0]) { //判断listData.date是否为当前
+                if (listData.list.length < urlList.length) { //判断list是否为空
+                    urlList.forEach(it => {
+                        crawlData.start(it).then(res => { //
+                            listData.list.push(res);
+                            //TODO写入数据库
+                            console.log(res);
+                        })
+                    });
+                }
+            } else { //date过期，要抓取数据，修改listData.listData.date, 写入数据库
+                urlList.forEach(it => {
+                    crawlData.start(it).then(res => { //
+                        listData.list.push(res);
+                        //TODO写入数据库
+                        console.log(res);
+                    })
+                });
+                listData.date = (new Date).toLocaleString().split(' ')[0];
+            }
+        } else { //不是02:00则清空list
+            listData.list.length = 0;
+        }
+    }, 30000)
 }
-crawlData.init();
+
+crawTimer();
 
 app.use(router(_ => {
     _.get('/getlist', async (ctx, next) => {
         let indexM = new indexModel();
-        let dataList = await indexM.getList();
-        let newUrlList = rangeList(urlList,dataList);
+        let data = await indexM.getList();
+        let newUrlList = rangeData.rangeList(urlList, JSON.parse(data));
         ctx.body = newUrlList;
     })
 }));
 app.listen(8800);
 console.log('app started at port 8800...');
+

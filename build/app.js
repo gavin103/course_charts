@@ -1,5 +1,13 @@
 'use strict';
 
+var _getIterator2 = require('babel-runtime/core-js/get-iterator');
+
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
 var _toConsumableArray2 = require('babel-runtime/helpers/toConsumableArray');
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
@@ -200,16 +208,15 @@ var urlList = [{
 
 var crawlData = {
 
-    'init': function init() {
-        var _this = this;
-
-        urlList.forEach(function (item) {
-            _this.start(item);
-        });
-    },
     'start': function () {
         var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(item) {
-            var onLineStuTmp, onLineStu, totalStuTmp, totalStu, createDate, obj;
+            var onLineStuTmp,
+                onLineStu,
+                totalStuTmp,
+                totalStu,
+                createDate,
+                obj,
+                _args = arguments;
             return _regenerator2.default.wrap(function _callee$(_context) {
                 while (1) {
                     switch (_context.prev = _context.next) {
@@ -247,9 +254,19 @@ var crawlData = {
                                 createDate: createDate,
                                 courseCode: item.courseCode
                             };
+                            //用递归调用，在任一属性为空的时候再次抓取数据，直到全部非空，返回对象
+
+                            if (!(obj.onLineStu && obj.totalStu && obj.createDate && obj.courseCode)) {
+                                _context.next = 16;
+                                break;
+                            }
+
                             return _context.abrupt('return', obj);
 
-                        case 13:
+                        case 16:
+                            _args.callee();
+
+                        case 17:
                         case 'end':
                             return _context.stop();
                     }
@@ -280,38 +297,113 @@ var crawlData = {
         });
     }
 };
+var rangeData = {
+    'cloneList': function cloneList(urlList) {
+        var newUrlList = [].concat((0, _toConsumableArray3.default)(urlList));
+        newUrlList.forEach(function (item, index) {
+            item.data = [];
+            newUrlList[index] = (0, _extends3.default)({}, item);
+        });
+        return newUrlList;
+    },
 
-function rangeList(urlList, dataList) {
-    var newUrlList = [].concat((0, _toConsumableArray3.default)(urlList));
+    'rangeList': function rangeList(urlList, dataList) {
+        var newUrlList = this.cloneList(urlList);
 
-    var _loop = function _loop(item) {
-        if (!item.url || !item.courseCode) {
-            return 'continue';
+        var _loop = function _loop(item) {
+            dataList.forEach(function (it) {
+                if (+it.courseCode == +item.courseCode) {
+                    item.data.push(it);
+                }
+            });
+            item.data = item.data.sort(function (a, b) {
+                return Date.parse(a.createDate) - Date.parse(b.createDate);
+            });
         };
-        item.data = [];
-        dataList.forEach(function (it) {
-            if (it.courseCode) {
-                it.courseCode == item.courseCode ? item.data.push(it) : null;
+
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+            for (var _iterator = (0, _getIterator3.default)(newUrlList), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var item = _step.value;
+
+                _loop(item);
             }
-        });
-        item.data.sort(function (a, b) {
-            return Date.parse(a.createDate) - Date.parse(b.createDate);
-        });
-    };
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
+            }
+        }
 
-    for (var item in newUrlList) {
-        var _ret = _loop(item);
+        return newUrlList;
+    }
+};
 
-        if (_ret === 'continue') continue;
+function crawTimer() {
+    //初始化list
+    var listData = {
+        list: [],
+        date: new Date().toLocaleString().split(' ')[0]
     };
-    return newUrlList;
+    //设置定时器，每30秒执行一次
+    var timer = setInterval(function () {
+        //获取当前时间
+        var t = new Date().toLocaleString().split(' ')[1];
+        console.log(t);
+        var h = t.split(':')[0];
+        var m = t.split(':')[1];
+
+        if (parseInt(m) % 5 == 0) {
+            //判断时间是否为5/0,todo换0:00
+            if (listData.date && listData.date == new Date().toLocaleString().split(' ')[0]) {
+                //判断listData.date是否为当前
+                if (listData.list.length < urlList.length) {
+                    //判断list是否为空
+                    urlList.forEach(function (it) {
+                        crawlData.start(it).then(function (res) {
+                            //
+                            listData.list.push(res);
+                            //TODO写入数据库
+                            console.log(res);
+                        });
+                    });
+                }
+            } else {
+                //date过期，要抓取数据，修改listData.listData.date, 写入数据库
+                urlList.forEach(function (it) {
+                    crawlData.start(it).then(function (res) {
+                        //
+                        listData.list.push(res);
+                        //TODO写入数据库
+                        console.log(res);
+                    });
+                });
+                listData.date = new Date().toLocaleString().split(' ')[0];
+            }
+        } else {
+            //不是02:00则清空list
+            listData.list.length = 0;
+        }
+    }, 30000);
 }
-crawlData.init();
+
+crawTimer();
 
 app.use((0, _koaSimpleRouter2.default)(function (_) {
     _.get('/getlist', function () {
         var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(ctx, next) {
-            var indexM, dataList, newUrlList;
+            var indexM, data, newUrlList;
             return _regenerator2.default.wrap(function _callee2$(_context2) {
                 while (1) {
                     switch (_context2.prev = _context2.next) {
@@ -321,8 +413,8 @@ app.use((0, _koaSimpleRouter2.default)(function (_) {
                             return indexM.getList();
 
                         case 3:
-                            dataList = _context2.sent;
-                            newUrlList = rangeList(urlList, dataList);
+                            data = _context2.sent;
+                            newUrlList = rangeData.rangeList(urlList, JSON.parse(data));
 
                             ctx.body = newUrlList;
 
