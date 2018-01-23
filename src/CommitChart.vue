@@ -1,7 +1,8 @@
 <template>
 <div class="Chart">
       <h1 style="text-align:center;">Linechart</h1>
-      <line-example></line-example>
+      <line-example>
+      </line-example>
 </div>
 </template>
 <script>

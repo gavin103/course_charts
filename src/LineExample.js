@@ -1,15 +1,16 @@
 import Line from './Line'
-
+import data from './data'
 export default {
   extends: Line,
   mounted () {
+    console.log(data.state);
     this.renderChart({
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      labels:this.dateList,
       datasets: [
         {
           label: 'Data One',
           backgroundColor: '#f87979',
-          data: [40, 39, 10, 40, 39, 80, 40]
+          data:this.onlineList
         }
       ]
     }, {responsive: true, maintainAspectRatio: false})
