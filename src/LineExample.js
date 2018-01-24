@@ -2,8 +2,13 @@ import Line from './Line'
 import data from './data'
 export default {
   extends: Line,
+  data(){
+    return{
+      dateList:[],
+      onlineList:[]
+    }
+  },
   mounted () {
-    console.log(data.state);
     this.renderChart({
       labels:this.dateList,
       datasets: [
@@ -14,5 +19,18 @@ export default {
         }
       ]
     }, {responsive: true, maintainAspectRatio: false})
+  },
+  computed:{
+    done(){
+      console.log("computed"+this.$store.getters.done)
+      return this.$store.getters.done;
+    }
+  },
+  updated:function(){
+    this.$nextTick(function () {
+    console.log("0:"+data);
+    console.log("1:"+data.dateList);
+    console.log("2:"+data.state.dateList);
+  })
   }
 }

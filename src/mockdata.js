@@ -1,0 +1,26 @@
+{
+	"url":"https://ke.qq.com/course/130952",
+    "course":"阿里前端p6架构师培养计划",
+    "org":"动脑学院",
+    "courseCode":10,
+    "data":[
+    	{
+    		"createDate":"2018/1/11",
+    		"onLineStu":"2000人",
+    		"totalStu":"5万人"
+    	},{
+    		"createDate":"2018/1/12",
+    		"onLineStu":"2050",
+    		"totalStu":"55000"
+    	},{
+    		"createDate":"2018/1/13",
+    		"onLineStu":"2200",
+    		"totalStu":"65000"
+    	},{
+    		"createDate":"2018/1/14",
+    		"onLineStu":"2100",
+    		"totalStu":"70000"
+    	}
+    ]
+
+}
