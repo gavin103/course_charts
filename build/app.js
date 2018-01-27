@@ -52,153 +52,22 @@ var _requestPromise = require('request-promise');
 
 var _requestPromise2 = _interopRequireDefault(_requestPromise);
 
+var _config = require('./configs/config.js');
+
+var _config2 = _interopRequireDefault(_config);
+
+var _urlList = require('./configs/url-list.js');
+
+var _urlList2 = _interopRequireDefault(_urlList);
+
 var _indexModel = require('./models/indexModel');
 
 var _indexModel2 = _interopRequireDefault(_indexModel);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var indexM = new _indexModel2.default();
 var app = new _koa2.default();
-/**
- * 定义需获取课程信息列表数组
- * url： 课程页面网址
- * course： 课程名
- * org： 发布课程的机构名
- * courseCode：自定义，递增，负责信息筛选
- *
- * @type {*[]}
- */
-var urlList = [{
-    url: 'https://ke.qq.com/course/130952',
-    course: '阿里前端p6架构师培养计划',
-    org: "动脑学院",
-    courseCode: 10,
-    data: [{
-        createDate: '2018/1/11',
-        onLineStu: '2000人',
-        totalStu: '5万人'
-    }, {
-        createDate: '2018/1/12',
-        onLineStu: '2050人',
-        totalStu: '55000人'
-    }, {
-        createDate: '2018/1/13',
-        onLineStu: '2200人',
-        totalStu: '6万人'
-    }, {
-        createDate: '2018/1/14',
-        onLineStu: '2100人',
-        totalStu: '6万人'
-    }, {
-        createDate: '2018/1/15',
-        onLineStu: '2000人',
-        totalStu: '6万人'
-    }]
-}, {
-    url: 'https://ke.qq.com/course/222222',
-    course: '前腾讯架构师手把手教你前端工程师必备技能',
-    org: '京程一灯',
-    courseCode: 11,
-    data: [{
-        createDate: '2018/1/11',
-        onLineStu: '3000人',
-        totalStu: '45623人'
-    }, {
-        createDate: '2018/1/12',
-        onLineStu: '3350人',
-        totalStu: '55000人'
-    }, {
-        createDate: '2018/1/13',
-        onLineStu: '2200人',
-        totalStu: '6万人'
-    }, {
-        createDate: '2018/1/14',
-        onLineStu: '3130人',
-        totalStu: '6万人'
-    }, {
-        createDate: '2018/1/15',
-        onLineStu: '5000人',
-        totalStu: '6万人'
-    }]
-}, {
-    url: 'https://ke.qq.com/course/97965',
-    course: 'Web前端高薪就业班-公开课｜H5/CSS3/JS/JqueryUI/H5框架-vue',
-    org: '职坐标',
-    courseCode: 12,
-    data: [{
-        createDate: '2018/1/11',
-        onLineStu: '3000人',
-        totalStu: '45623人'
-    }, {
-        createDate: '2018/1/12',
-        onLineStu: '3350人',
-        totalStu: '55000人'
-    }, {
-        createDate: '2018/1/13',
-        onLineStu: '2200人',
-        totalStu: '6万人'
-    }, {
-        createDate: '2018/1/14',
-        onLineStu: '3130人',
-        totalStu: '6万人'
-    }, {
-        createDate: '2018/1/15',
-        onLineStu: '5000人',
-        totalStu: '6万人'
-    }]
-}, {
-    url: 'https://ke.qq.com/course/20945',
-    course: 'Web前端/全栈核心(html5/css3/js/vue/react/angular/es6/node)',
-    org: '软谋教育',
-    courseCode: 13,
-    data: [{
-        createDate: '2018/1/11',
-        onLineStu: '3000人',
-        totalStu: '45623人'
-    }, {
-        createDate: '2018/1/12',
-        onLineStu: '3350人',
-        totalStu: '55000人'
-    }, {
-        createDate: '2018/1/13',
-        onLineStu: '2200人',
-        totalStu: '6万人'
-    }, {
-        createDate: '2018/1/14',
-        onLineStu: '3130人',
-        totalStu: '6万人'
-    }, {
-        createDate: '2018/1/15',
-        onLineStu: '5000人',
-        totalStu: '6万人'
-    }]
-}, {
-    url: 'https://ke.qq.com/course/218792',
-    course: '精品实战案例，4步搞定 Vue.js',
-    org: '妙味课堂',
-    courseCode: 14,
-    data: [{
-        createDate: '2018/1/11',
-        onLineStu: '3000人',
-        totalStu: '45623人'
-    }, {
-        createDate: '2018/1/12',
-        onLineStu: '3350人',
-        totalStu: '55000人'
-    }, {
-        createDate: '2018/1/13',
-        onLineStu: '2200人',
-        totalStu: '6万人'
-    }, {
-        createDate: '2018/1/14',
-        onLineStu: '3130人',
-        totalStu: '6万人'
-    }, {
-        createDate: '2018/1/15',
-        onLineStu: '5000人',
-        totalStu: '6万人'
-    }]
-}];
 
 /**
  * spider 为爬虫方法
@@ -363,30 +232,28 @@ function crawTimer() {
         console.log(t);
         var h = t.split(':')[0];
         var m = t.split(':')[1];
-
+        // if (parseInt(h) == (CONFIG.crawT || 2)) { 取消注释本行，注释掉下一行
         if (parseInt(m) % 5 == 0) {
-            //判断时间是否为5/0,todo换0:00
+            //判断时间是否为5/0,抓取一次数据
             if (listData.date && listData.date == new Date().toLocaleString().split(' ')[0]) {
                 //判断listData.date是否为当前
-                if (listData.list.length < urlList.length) {
+                if (listData.list.length < _urlList2.default.length) {
                     //判断list是否为空
-                    urlList.forEach(function (it) {
+                    _urlList2.default.forEach(function (it) {
                         crawlData.start(it).then(function (res) {
                             //
                             listData.list.push(res);
-                            //TODO写入数据库
-                            console.log(res);
+                            indexM.setList(res);
                         });
                     });
                 }
             } else {
                 //date过期，要抓取数据，修改listData.listData.date, 写入数据库
-                urlList.forEach(function (it) {
+                _urlList2.default.forEach(function (it) {
                     crawlData.start(it).then(function (res) {
                         //
                         listData.list.push(res);
-                        //TODO写入数据库
-                        console.log(res);
+                        indexM.setList(res);
                     });
                 });
                 listData.date = new Date().toLocaleString().split(' ')[0];
@@ -395,7 +262,7 @@ function crawTimer() {
             //不是02:00则清空list
             listData.list.length = 0;
         }
-    }, 30000);
+    }, _config2.default.step || 30000);
 }
 
 crawTimer();
@@ -403,20 +270,24 @@ crawTimer();
 app.use((0, _koaSimpleRouter2.default)(function (_) {
     _.get('/getlist', function () {
         var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(ctx, next) {
-            var indexM, data, newUrlList;
+            var limit, data, newUrlList;
             return _regenerator2.default.wrap(function _callee2$(_context2) {
                 while (1) {
                     switch (_context2.prev = _context2.next) {
                         case 0:
-                            indexM = new _indexModel2.default();
+                            limit = ctx.request.query.limit || _urlList2.default.length * 7;
                             _context2.next = 3;
-                            return indexM.getList();
+                            return indexM.getList(limit);
 
                         case 3:
                             data = _context2.sent;
-                            newUrlList = rangeData.rangeList(urlList, JSON.parse(data));
+                            newUrlList = rangeData.rangeList(_urlList2.default, JSON.parse(data));
 
-                            ctx.body = newUrlList;
+                            ctx.body = {
+                                err: 0,
+                                msg: "success",
+                                list: newUrlList
+                            };
 
                         case 6:
                         case 'end':

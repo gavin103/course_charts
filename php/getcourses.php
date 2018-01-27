@@ -5,8 +5,17 @@
 			parent::__construct($servername,$username,$password, $dbname);
 		}
 		public function getCourse(){
-			$sql = "SELECT `createDate`, `onLineStu`, `totalStu`, `courseCode` FROM `t_coursesdata` WHERE 1";
-			$this->getData($sql);
+			if($this->con==null){
+				$this->getConnection();
+			}
+			$limit = $_GET['limit'];
+			$sql = "SELECT `createDate`, `onLineStu`, `totalStu`, `courseCode` FROM `t_coursesdata` ORDER BY `id` DESC LIMIT $limit";
+			$statement=$this->con->prepare($sql);
+			$statement->execute();
+			$results=$statement->fetchAll(PDO::FETCH_ASSOC);
+			$res=json_encode($results);
+			echo $res;
+			$this->disConnect();
 		}
 	}
 	$getCourses = new getCon('localhost','mysql','','test');

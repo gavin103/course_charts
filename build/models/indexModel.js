@@ -31,15 +31,33 @@ var indexModel = function () {
 
     (0, _createClass3.default)(indexModel, [{
         key: 'getList',
-        value: function getList() {
+        value: function getList(limit) {
             var option = {
                 uri: 'http://localhost/getcourses.php',
+                qs: {
+                    limit: limit || 35
+                },
                 method: 'GET'
             };
             return new _promise2.default(function (resolve, reject) {
                 (0, _requestPromise2.default)(option).then(function (res) {
                     resolve(res);
                 });
+            });
+        }
+    }, {
+        key: 'setList',
+        value: function setList(body) {
+            var options = {
+                method: 'POST',
+                uri: 'http://localhost/setcourses.php',
+                body: body,
+                json: true
+            };
+            (0, _requestPromise2.default)(options).then(function (parsedBody) {
+                console.log('write2DB=>' + Date.now());
+            }).catch(function (err) {
+                console.log(err);
             });
         }
     }]);

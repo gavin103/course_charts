@@ -21,26 +21,6 @@
            		echo $e->getMessage();
          	}
 		}
-		public function getData($sql){
-			if($this->con==null){
-				$this->getConnection();
-			}
-			$statement=$this->con->prepare($sql);
-			$statement->execute();
-			$results=$statement->fetchAll(PDO::FETCH_ASSOC);
-			$res=json_encode($results);
-			echo $res;
-			$this->disConnect();
-		}
-		public function setData($sql){
-			if ($this->con==null) {
-    			$this->getConnection();
-    		}
-    		$statement=$this->con->prepare($sql);
-    		$statement->execute();
-    		echo $this->con->lastInsertId();
-    		$this->disConnect();
-		}
 		public function disConnect(){
 			$this->con=null;
 		}
