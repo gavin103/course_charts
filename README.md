@@ -15,5 +15,8 @@ A vue project using koa vue-echarts to tracking data in ke.qq.com
 - configs 存储配置文件
 - configs/url-list.js 配置需要抓取的信息；如需修改或添加，需要根据已有例子操作。
 
-## 后续
+## 接口列表
+- 默认端口为8800；
+- 前端接口为127.0.0.1:8800/getlist?limit=35;
+- limit参数可选，默认设置为url-list中数组长度的7倍。即7天的数据
 
