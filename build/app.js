@@ -64,10 +64,28 @@ var _indexModel = require('./models/indexModel');
 
 var _indexModel2 = _interopRequireDefault(_indexModel);
 
+var _koa2Cors = require('koa2-cors');
+
+var _koa2Cors2 = _interopRequireDefault(_koa2Cors);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var indexM = new _indexModel2.default();
 var app = new _koa2.default();
+
+app.use((0, _koa2Cors2.default)({
+    origin: function origin(ctx) {
+        if (ctx.url === '/test') {
+            return false;
+        }
+        return '*';
+    },
+    exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+    maxAge: 5,
+    credentials: true,
+    allowMethods: ['GET', 'POST', 'DELETE'],
+    allowHeaders: ['Content-Type', 'Authorization', 'Accept']
+}));
 
 /**
  * spider 为爬虫方法
