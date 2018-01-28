@@ -1,36 +1,27 @@
-import Line from './Line'
-import data from './data'
+//注意的是第三方的库不要往这里折腾了
+import { Bar,Line } from 'vue-chartjs'
+//不要去new Vue,new Vue之后 一定要挂载 render/el mounted
 export default {
+  //不要去自己建 
   extends: Line,
-  data(){
-    return{
-      dateList:[],
-      onlineList:[]
-    }
-  },
+  //善用Vuex
+  computed:Vuex.mapState({
+    dateList:state=> state.dateList,
+    onlineList:state=>state.onlineList
+  }),
+  //注意声明周期
   mounted () {
+    //从computed过来的东西 不要和 data冲突
+    console.log('我的this',this.dateList);
     this.renderChart({
-      labels:this.dateList,
+      labels: this.dateList,
       datasets: [
         {
-          label: 'Data One',
+          label: 'GitHub Commits',
           backgroundColor: '#f87979',
-          data:this.onlineList
+          data: this.onlineList
         }
       ]
-    }, {responsive: true, maintainAspectRatio: false})
-  },
-  computed:{
-    done(){
-      console.log("computed"+this.$store.getters.done)
-      return this.$store.getters.done;
-    }
-  },
-  updated:function(){
-    this.$nextTick(function () {
-    console.log("0:"+data);
-    console.log("1:"+data.dateList);
-    console.log("2:"+data.state.dateList);
-  })
+    })
   }
 }

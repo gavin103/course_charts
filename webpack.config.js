@@ -3,38 +3,32 @@ const path=require('path');
 const htmlwebpackplugin=require('html-webpack-plugin');
 module.exports={
 	entry:{
-		"main":"./src/main.es",
+		"main":"./src/main.js",
 	},
 	output:{
 		path:path.join(__dirname,"./build"),
-		publicPath:'./build',
 		filename:'[name].js'
 	},
-	// devServer: { //新增配置项
- //        contentBase: path.join(__dirname, "/index.html"),
- //        port: 8080
- //    },
 	module:{
 		rules:[
 		{
-			test:/\.es$/,
+			test:/\.js$/,
 			use:[{
 				loader:"babel-loader",
-				options:{
-				    "presets":[
-				        ['es2015',{
-				            'modules':false
-				        }],"stage-0"
-				    ]
-				}
-			}]
-		},{
+
+			}],
+			exclude: path.resolve(__dirname, "./node_modules")
+		}
+		,{
 			test:/\.vue$/,
 			use:[{
 				loader:"vue-loader",
 			}]
-		}]
+		}
+		]
+
 	},
+	//devtool:'cheap-module-eval-source-map',
 	plugins:[
 		new webpack.optimize.CommonsChunkPlugin({
 			name:'common',
@@ -42,7 +36,7 @@ module.exports={
 			minChunks:2
 		}),
 		new htmlwebpackplugin({
-			filename:'../index.html',
+			filename:'./index.html',
 			template:'./src/view/index.html',
 			inject:true
 		}),

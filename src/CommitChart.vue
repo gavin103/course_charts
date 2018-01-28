@@ -7,7 +7,7 @@
 </template>
 <script>
   import LineExample from './LineExample'
-  export default {
+ export default{
     components: {
       LineExample,
     },
@@ -51,10 +51,11 @@
       }
     }
   }
+
 </script>
 <style>
   .container {
-    max-width: 800px;
+    max-width: 500px;
     margin: 0 auto;
   }
 
