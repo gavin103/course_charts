@@ -9,8 +9,23 @@ import rp from 'request-promise';
 import CONFIG from './configs/config.js';
 import urlList from './configs/url-list.js';
 import indexModel from './models/indexModel';
+import cors from 'koa2-cors';
 const indexM = new indexModel();
 const app = new Koa();
+
+app.use(cors({
+  origin: function(ctx) {
+    if (ctx.url === '/test') {
+      return false;
+    }
+    return '*';
+  },
+  exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+  maxAge: 5,
+  credentials: true,
+  allowMethods: ['GET', 'POST', 'DELETE'],
+  allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
+}));
 
 /**
  * spider 为爬虫方法

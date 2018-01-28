@@ -4,8 +4,9 @@ const state={
 }
 const mutations={
 	getData:function(state){
-		axios.get('http://localhost:8000/mockdata.js')
+		axios.get('http://localhost:8800/getlist')
 	    .then(function(response){
+	    	console.log(response)
 	        let obj = response.data;
 	        let total = obj.data;
 	        total.map(function(obj){
