@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./build/app.js",
-    "dev":"webpack-dev-server --inline --hot --content-base ./build   --port 8000 --host 0.0.0.0"
+    "dev": "webpack-dev-server --inline --hot --content-base ./build   --port 8000 --host 0.0.0.0"
   },
   "repository": {
     "type": "git",
@@ -35,13 +35,11 @@
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.0",
     "babel-preset-env": "^1.6.1",
-    "babel-preset-stage-0": "^6.24.1",
     "cheerio": "^1.0.0-rc.2",
     "co": "^4.6.0",
     "koa": "^2.4.1",
     "koa-simple-router": "^0.2.0",
     "koa-static": "^4.0.2",
-    "path": "^0.12.7",
     "request": "^2.83.0",
     "request-promise": "^4.2.2"
   },
