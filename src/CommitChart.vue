@@ -1,15 +1,20 @@
 <template>
 <div class="Chart">
-      <h1 style="text-align:center;">Linechart</h1>
+      <h1 style="text-align:center;">线上学生学习人数</h1>
       <line-example>
       </line-example>
+      <h1 style="text-align:center;">总报名人数</h1>
+      <line-all>
+      </line-all>
 </div>
 </template>
 <script>
-  import LineExample from './LineExample'
+  import LineExample from './LineExample';
+  import LineAll from './LineAll';
  export default{
     components: {
       LineExample,
+      LineAll
     },
     data () {
       return {

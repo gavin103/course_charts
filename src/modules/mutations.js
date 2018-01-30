@@ -1,27 +1,36 @@
 const state={
+	list:[],
 	dateList:[],
-	onlineList:[]
+	onlinestu:[],
+	totalstu:[]
 }
 const mutations={
 	getData:function(state){
 		axios.get('http://localhost:8800/getlist')
 	    .then(function(response){
-	    	console.log(response)
-	        let obj = response.data;
-	        let total = obj.data;
-	        total.map(function(obj){
-	        	state.dateList.push(obj.createDate);
-	        	state.onlineList.push(obj.onLineStu);
-	        	console.log(state.dateList);
-	        })
-	        // console.log(state.dateList);
+	        let obj = response.data.list;
+	        state.list=obj;
+	        console.log(obj);
+	        const index=obj[0].data.length;
+	        const student=[];
+	        const total=[];
+	        for(let i=0;i<index;i++){
+	        	state.dateList.push(obj[0].data[i].createDate);
+	        }
+	        for(let i=0;i<obj.length;i++){
+	        	for(let j=0;j<obj[i].data.length;j++){
+	        		student.push(obj[i].data[j].onLineStu);
+	        		total.push(obj[i].data[j].totalStu);
+	        	}
+	        	state.onlinestu.push(student);
+	        	state.totalstu.push(total);
+	        }
 	    })
 	    .catch(function(error){
 	        console.log(error);
 	    })
 	}
 }
-console.log('mutations');
 export default{
 	state,
 	mutations
