@@ -15,45 +15,6 @@
     components: {
       LineExample,
       LineAll
-    },
-    data () {
-      return {
-        dataPoints: null,
-        height: 20
-      }
-    },
-    mounted () {
-      setInterval(() => {
-        this.fillData()
-      }, 2000)
-    },
-    methods: {
-      increaseHeight () {
-        this.height += 10
-      },
-      getRandomInt () {
-        return Math.floor(Math.random() * (50 - 5 + 1)) + 5
-      },
-      fillData () {
-        this.dataPoints = {
-          labels: ['January' + this.getRandomInt(), 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-          datasets: [
-            {
-              label: 'Data One',
-              backgroundColor: '#f87979',
-              data: [this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt(), this.getRandomInt()]
-            }
-          ]
-        }
-      }
-    },
-    computed: {
-      myStyles () {
-        return {
-          height: `${this.height}px`,
-          position: 'relative'
-        }
-      }
     }
   }
 
@@ -65,19 +26,20 @@
   }
 
   h1 {
+    color:white;
     font-family: 'Helvetica', Arial;
-    color: #464646;
     text-transform: uppercase;
-    border-bottom: 1px solid #f1f1f1;
+    border-bottom: 1px solid #323d54;
     padding-bottom: 15px;
     font-size: 28px;
     margin-top: 0;
   }
 
   .Chart {
+    background: #212733;
     padding: 20px;
-    box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, .4);
-    border-radius: 20px;
-    margin: 50px 0;
+    border-radius: 15px;
+    box-shadow: 0px 2px 15px rgba(25, 25, 25, 0.27);
+    margin:  25px 0;
   }
 </style>

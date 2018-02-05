@@ -40,6 +40,7 @@ const crawlData = {
         let onLineStu = null;
         onLineStuTmp.split(' ').forEach((item) => {
             if (item.includes('人')) {
+                console.log("去掉人之前是什么"+item);
                 onLineStu = item;
             }
         });
@@ -62,6 +63,7 @@ const crawlData = {
         };
         //用递归调用，在任一属性为空的时候再次抓取数据，直到全部非空，返回对象
         if (obj.onLineStu && obj.totalStu && obj.createDate && obj.courseCode) {
+           
             return obj;
         } else {
             arguments.callee();
@@ -127,8 +129,8 @@ function crawTimer() {
         console.log(t);
         let h = t.split(':')[0];
         let m = t.split(':')[1];
-        // if (parseInt(h) == (CONFIG.crawT || 2)) { 取消注释本行，注释掉下一行
-        if (parseInt(m) % 5 == 0) { //判断时间是否为5/0,抓取一次数据
+         if (parseInt(h) == (CONFIG.crawT || 2)) { 取消注释本行，注释掉下一行
+       // if (parseInt(m) % 5 == 0) { //判断时间是否为5/0,抓取一次数据
             if (listData.date && listData.date == (new Date).toLocaleString().split(' ')[0]) { //判断listData.date是否为当前
                 if (listData.list.length < urlList.length) { //判断list是否为空
                     urlList.forEach(it => {
